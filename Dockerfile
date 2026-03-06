@@ -13,7 +13,7 @@
     RUN npm run build
     
     # --- Étape 3 : Application finale ---
-    FROM php:8.3-cli-alpine AS app
+    FROM php:8.4-cli-alpine AS app
     WORKDIR /var/www/html
     
     # Installation des dépendances système nécessaires

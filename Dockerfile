@@ -13,8 +13,10 @@ RUN npm run build
 FROM php:8.4-cli-alpine AS app
 WORKDIR /var/www/html
 
-RUN apk add --no-cache unzip libpq-dev sqlite-libs \
-    && docker-php-ext-install pdo pdo_sqlite pdo_pgsql
+RUN apk add --no-cache unzip \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS postgresql-dev sqlite-dev \
+    && docker-php-ext-install pdo_sqlite pdo_pgsql \
+    && apk del .build-deps
 
 COPY . .
 COPY --from=composer_deps /app/vendor ./vendor

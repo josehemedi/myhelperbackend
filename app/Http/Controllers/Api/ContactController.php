@@ -38,10 +38,17 @@ class ContactController extends Controller
             ]);
             report($exception);
 
-            return response()->json([
+            $response = [
                 'success' => false,
                 'message' => 'Le message n\'a pas pu etre envoye pour le moment.',
-            ], 500);
+            ];
+
+            if (config('app.debug') || env('MAIL_DEBUG_EXCEPTIONS', false)) {
+                $response['error'] = $exception->getMessage();
+                $response['exception'] = $exception::class;
+            }
+
+            return response()->json($response, 500);
         }
 
         return response()->json([

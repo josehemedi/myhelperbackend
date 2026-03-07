@@ -5,9 +5,8 @@ namespace App\Http\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ContactMessageMail extends Mailable implements ShouldQueue
+class ContactMessageMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -24,10 +23,9 @@ class ContactMessageMail extends Mailable implements ShouldQueue
             ->subject('Nouveau message de contact')
             ->view('emails.contact_message')
             ->with([
-                'name'      => $this->name,
-                'email'     => $this->email,
-                'content'   => $this->messageContent,
+                'name' => $this->name,
+                'email' => $this->email,
+                'content' => $this->messageContent,
             ]);
     }
 }
-

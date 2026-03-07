@@ -7,6 +7,7 @@ use App\Http\Mail\ContactMessageMail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class ContactController extends Controller
 {
@@ -18,17 +19,25 @@ class ContactController extends Controller
             'message' => ['required', 'string'],
         ]);
 
-        Mail::to('emedisiku@gmail.com')
-            ->queue(new ContactMessageMail(
-                $validated['nom'],
-                $validated['email'],
-                $validated['message']
-            ));
+        try {
+            Mail::to('emedisiku@gmail.com')
+                ->send(new ContactMessageMail(
+                    $validated['nom'],
+                    $validated['email'],
+                    $validated['message']
+                ));
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Le message n\'a pas pu etre envoye pour le moment.',
+            ], 500);
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Message envoyé avec succès.',
+            'message' => 'Message envoye avec succes.',
         ]);
     }
 }
-

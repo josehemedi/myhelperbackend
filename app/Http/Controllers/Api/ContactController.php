@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Mail\ContactMessageMail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -27,6 +28,14 @@ class ContactController extends Controller
                     $validated['message']
                 ));
         } catch (Throwable $exception) {
+            Log::error('Contact email send failed.', [
+                'error' => $exception->getMessage(),
+                'mailer' => config('mail.default'),
+                'mail_host' => config('mail.mailers.smtp.host'),
+                'mail_port' => config('mail.mailers.smtp.port'),
+                'mail_username_configured' => filled(config('mail.mailers.smtp.username')),
+                'mail_from' => config('mail.from.address'),
+            ]);
             report($exception);
 
             return response()->json([
